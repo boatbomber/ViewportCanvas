@@ -55,21 +55,24 @@ function module.new(ResX: number, ResY: number)
 	Camera.FieldOfView = 20
 	Camera.Parent = Container
 	Container.CurrentCamera = Camera
-
-	-- Position camera to fit canvas
-	do
-		local h = (ResY / (math.tan(math.rad(Camera.FieldOfView / 2)) * 2)) + (1 / 2)
-
-		Camera.CFrame = CFrame.lookAt(Vector3.new(0, 0, h), Vector3.zero)
-	end
+	Camera.CFrame = CFrame.lookAt(
+		Vector3.new( -- Position camera to fit canvas
+			0,
+			0,
+			((ResY * 0.1) / (math.tan(math.rad(Camera.FieldOfView / 2)) * 2)) + (1 / 2)
+		),
+		Vector3.zero
+	)
 
 	-- Create a pool of Frame instances with Gradients
 	do
 		local Pixel = Instance.new("Part")
 		Pixel.Color = Color3.new(1, 1, 1)
-		Pixel.Size = Vector3.new(1, 1, 1)
+		Pixel.Size = Vector3.new(0.1, 0.1, 0.1)
+		Pixel.Material = Enum.Material.SmoothPlastic
 		Pixel.Anchored = true
 		Pixel.CanCollide = false
+		Pixel.CanTouch = false
 		Pixel.Name = "Pixel"
 
 		Canvas._Pool = PartPool.new(Pixel, World, Folder, math.min(ResX * ResX * 0.1, 1000))
@@ -198,11 +201,15 @@ function module.new(ResX: number, ResY: number)
 				local pixel = self._Pixels[pixelCount] or self._Pool:Get()
 				pixel.Name = string.format("(%d, %d)-(%d, %d)", x, y, x + width, y + height)
 				pixel.Color = color
-				pixel.Size = Vector3.new(width, height, 1)
+				pixel.Size = Vector3.new(width * 0.1, height * 0.1, 1)
 				--pixel.Position = Vector3.new(-ResX/2 + x + width/2, ResY/2 - y - height/2, 0)
 
 				parts[pixelCount] = pixel
-				cfs[pixelCount] = CFrame.new(-ResX / 2 + x + width / 2, ResY / 2 - y - height / 2, 0)
+				cfs[pixelCount] = CFrame.new(
+					(-ResX * 0.05) + (x * 0.1) + (width * 0.05),
+					(ResY * 0.05) - (y * 0.1) - (height * 0.05),
+					0
+				)
 
 				self._Pixels[pixelCount] = pixel
 			end
