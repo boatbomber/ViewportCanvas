@@ -9,13 +9,13 @@ function module.new(ResX: number, ResY: number)
 
 		_ActiveParts = 0,
 
-		Threshold = 10, -- Rerender if you change this!
+		Threshold = 15, -- Rerender if you change this!
 	}
 
 	-- Generate initial grid of color data
 	local Grid = table.create(ResX)
 	for x = 1, ResX do
-		Grid[x] = table.create(ResY, Color3.new(1, 1, 1))
+		Grid[x] = table.create(ResY,nil)
 	end
 	Canvas._Grid = Grid
 
@@ -44,6 +44,10 @@ function module.new(ResX: number, ResY: number)
 	local World = Instance.new("WorldModel")
 	World.Parent = Container
 
+	local Folder = Instance.new("Folder")
+	Folder.Name = "Pixels"
+	Folder.Parent = World
+
 	local Camera = Instance.new("Camera")
 	Camera.FieldOfView = 20
 	Camera.Parent = Container
@@ -68,13 +72,14 @@ function module.new(ResX: number, ResY: number)
 		Pixel.CanCollide = false
 		Pixel.Name = "Pixel"
 
-		Canvas._Pool = PartPool.new(Pixel, ResX*ResY)
+		Canvas._Pool = PartPool.new(Pixel, World, Folder, math.min(ResX*ResX*0.1, 1000))
 		Pixel:Destroy()
 	end
 
 	-- Define API
 
 	function Canvas:Destroy()
+		self:Clear()
 		Gui:Destroy()
 		Canvas._Pool:Destroy()
 		table.clear(Canvas._Grid)
@@ -95,9 +100,9 @@ function module.new(ResX: number, ResY: number)
 
 	function Canvas:GetPixel(x: number, y: number)
 		local Col = self._Grid[x]
-		if not Col then return Color3.fromRGB(46, 46, 46) end
+		if not Col then return end
 
-		return Col[y] or Color3.fromRGB(46, 46, 46)
+		return Col[y]
 	end
 
 	function Canvas:Clear()
@@ -106,8 +111,10 @@ function module.new(ResX: number, ResY: number)
 		end
 	end
 
+	local parts, cfs = table.create(ResX*ResY), table.create(ResX*ResY)
 	function Canvas:Render()
-		self:Clear()
+		table.clear(parts)
+		table.clear(cfs)
 
 		local isVisited = table.create(ResX)
 		for x=1, ResX do
@@ -174,17 +181,30 @@ function module.new(ResX: number, ResY: number)
 				width += 1
 
 				pixelCount += 1
-				local pixel = self._Pool:Get()
+
+				local pixel = self._Pixels[pixelCount] or self._Pool:Get()
+				pixel.Name = string.format("(%d, %d)-(%d, %d)", x, y, x+width, y+height)
 				pixel.Color = color
 				pixel.Size = Vector3.new(width, height, 1)
-				pixel.Position = Vector3.new(-ResX/2 + x + width/2, ResY/2 - y - height/2, 0)
-				pixel.Parent = World
+				--pixel.Position = Vector3.new(-ResX/2 + x + width/2, ResY/2 - y - height/2, 0)
+
+				parts[pixelCount] = pixel
+				cfs[pixelCount] = CFrame.new(-ResX/2 + x + width/2, ResY/2 - y - height/2, 0)
 
 				self._Pixels[pixelCount] = pixel
 			end
 		end
 
+		task.spawn(World.BulkMoveTo, World, parts, cfs, Enum.BulkMoveMode.FireCFrameChanged)
+
+		for i=pixelCount+1, #self._Pixels do
+			self._Pool:Return(self._Pixels[i])
+			self._Pixels[i] = nil
+		end
+
 		self._ActiveParts = pixelCount
+
+		--print(string.format("Rendered %d pixels in %.1f ms", pixelCount, (os.clock()-startClock)*1000))
 	end
 
 	return Canvas
