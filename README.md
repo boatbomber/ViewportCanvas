@@ -1,7 +1,9 @@
 # ViewportCanvas
 A canvas renderer using greedy meshed parts in a ViewportFrame to draw efficiently in Roblox. Serves as an alternative to [GreedyCanvas](https://github.com/boatbomber/GreedyCanvas) since that one hits Roblox's UI cap.
 
-![landscape-canvas](https://user-images.githubusercontent.com/40185666/161709140-09edba9b-8228-4041-ac82-e077f94abc99.JPG)
+Here's ViewportCanvas rendering a 4k image (that's 8,294,400 pixels!) using just 1,176,336 Parts. No UI cap to concern yourself with!
+
+![spiderman-4k](https://user-images.githubusercontent.com/40185666/161853706-8585bf17-84db-4e31-b6a8-dfb6e9954547.PNG)
 
 ![rainbow-canvas](https://user-images.githubusercontent.com/40185666/161710154-82d50e4f-87c3-4f48-8a51-fc54854cca4e.JPG)
 
