@@ -51,7 +51,7 @@ function module.new(original: BasePart, worldModel: WorldRoot, parent: Instance,
 	function Pool:_CommitReturns()
 		self._willCommit = false
 
-		if (not self._Available) or (#self._Available == 0) then
+		if not self._Available or (#self._Available == 0) then
 			return
 		end
 
