@@ -1,0 +1,14 @@
+# Project build file
+/*.rbxm
+/*.rbxmx
+
+# Project place file
+/*.rbxl
+/*.rbxlx
+
+# Roblox Studio lock files
+/*.rbxl.lock
+/*.rbxlx.lock
+
+# VS Code files
+.vscode/*
