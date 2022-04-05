@@ -2,14 +2,17 @@ local module = {}
 
 local PartPool = require(script.PartPool)
 local Util = require(script.Util)
+
 function module.new(ResX: number, ResY: number)
 	local Canvas = {
 		_Pixels = {},
 		_Pool = nil,
-
 		_ActiveParts = 0,
 
-		Threshold = 15, -- Rerender if you change this!
+		-- Rerender if you change these!
+		Threshold = 15,
+		MaxWidth = math.ceil(ResX / 30),
+		MaxHeight = math.ceil(ResY / 30),
 	}
 
 	-- Generate initial grid of color data
@@ -138,7 +141,7 @@ function module.new(ResX: number, ResY: number)
 				local width, height = 0, 0
 
 				-- Find our width
-				for checkX = x + 1, ResX do
+				for checkX = x + 1, math.min(ResX, x + self.MaxWidth) do
 					if isVisited[checkX][y] then
 						break
 					end
@@ -156,9 +159,8 @@ function module.new(ResX: number, ResY: number)
 				end
 
 				-- Find our height
-				local below = self._Grid[x][y + 1]
-				if below then
-					for checkY = y + 1, ResY do
+				if self._Grid[x][y + 1] then
+					for checkY = y + 1, math.min(ResY, y + self.MaxHeight) do
 						local rowMatches = true
 
 						for checkX = x, x + width do
