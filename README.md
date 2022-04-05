@@ -3,7 +3,7 @@ A canvas renderer using greedy meshed parts in a ViewportFrame to draw efficient
 
 ![landscape-canvas](https://user-images.githubusercontent.com/40185666/161709140-09edba9b-8228-4041-ac82-e077f94abc99.JPG)
 
-![rainbow-canvas](https://user-images.githubusercontent.com/40185666/161709152-379bb77d-1eae-4736-aea6-921b422e1648.JPG)
+![rainbow-canvas](https://user-images.githubusercontent.com/40185666/161710154-82d50e4f-87c3-4f48-8a51-fc54854cca4e.JPG)
 
 ## API
 
@@ -63,29 +63,28 @@ local Demo = script.Parent.Demo
 local Ref = script.Parent.Ref
 
 -- Resolution
-local ResX, ResY = 16*6, 9*6
+local ResX, ResY = 16*10, 9*10
 
 -- Create Canvas
 local Canvas = require(script.ViewportCanvas).new(ResX, ResY)
-Canvas:SetParent(Demo)
+Canvas:SetParent(Demo.Holder)
 
 -- Draw pixels
 for x=1, ResX do
 	for y=1, ResY do
 		-- Define color
-		local v = math.sin(x/ResX) * math.cos(y/ResY)
-		local c = Color3.fromHSV(v, 0.9, 0.9)
+		local color = Color3.fromHSV(x/ResX, y/ResY, 1)
 
 		-- Set in canvas
-		Canvas:SetPixel(x, y, c)
+		Canvas:SetPixel(x, y, color)
 
 		-- Draw naively for reference
 		local pixel = Instance.new("Frame")
 		pixel.BorderSizePixel = 0
-		pixel.BackgroundColor3 = c
+		pixel.BackgroundColor3 = color
 		pixel.Size = UDim2.fromScale(1/ResX, 1/ResY)
 		pixel.Position = UDim2.fromScale((1/ResX)*(x-1), (1/ResY)*(y-1))
-		pixel.Parent = Ref.Canvas
+		pixel.Parent = Ref.Holder
 	end
 end
 
@@ -93,6 +92,6 @@ end
 Canvas:Render()
 
 -- Expose counts
-Demo.TextLabel.Text = string.format("Frames Instances: %d", Canvas._ActiveFrames)
-Ref.TextLabel.Text = string.format("Frames Instances: %d", ResX*ResY)
+Demo.Info.Text = string.format("%d Part instances (%.1f%% improvement!)", Canvas._ActiveParts, ((ResX*ResY)-Canvas._ActiveParts)/(ResX*ResY)*100)
+Ref.Info.Text = string.format("Frames Instances: %d", ResX*ResY)
 ```
