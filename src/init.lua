@@ -7,7 +7,7 @@ function module.new(ResX: number, ResY: number)
 	local Canvas = {
 		_Pixels = {},
 		_Pool = nil,
-		_ActiveParts = 0,
+		_Active = 0,
 
 		-- Rerender if you change these!
 		Threshold = 15,
@@ -222,7 +222,7 @@ function module.new(ResX: number, ResY: number)
 			self._Pixels[i] = nil
 		end
 
-		self._ActiveParts = pixelCount
+		self._Active = pixelCount
 
 		--print(string.format("Rendered %d pixels in %.1f ms", pixelCount, (os.clock()-startClock)*1000))
 	end
