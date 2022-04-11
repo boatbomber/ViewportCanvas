@@ -52,7 +52,7 @@ function module.new(ResX: number, ResY: number)
 	Folder.Parent = World
 
 	local Camera = Instance.new("Camera")
-	Camera.FieldOfView = 20
+	Camera.FieldOfView = 15
 	Camera.Parent = Container
 	Container.CurrentCamera = Camera
 	Camera.CFrame = CFrame.lookAt(
@@ -67,7 +67,7 @@ function module.new(ResX: number, ResY: number)
 	-- Create a pool of Frame instances with Gradients
 	do
 		local Pixel = Instance.new("Part")
-		Pixel.Color = Color3.new(1, 1, 1)
+		Pixel.Color = Color3.new(1, 1, 0.02)
 		Pixel.Size = Vector3.new(0.1, 0.1, 0.1)
 		Pixel.Material = Enum.Material.SmoothPlastic
 		Pixel.Anchored = true
@@ -201,7 +201,7 @@ function module.new(ResX: number, ResY: number)
 				local pixel = self._Pixels[pixelCount] or self._Pool:Get()
 				pixel.Name = string.format("(%d, %d)-(%d, %d)", x, y, x + width, y + height)
 				pixel.Color = color
-				pixel.Size = Vector3.new(width * 0.1, height * 0.1, 1)
+				pixel.Size = Vector3.new(width * 0.1, height * 0.1, 0.02)
 				--pixel.Position = Vector3.new(-ResX/2 + x + width/2, ResY/2 - y - height/2, 0)
 
 				parts[pixelCount] = pixel
